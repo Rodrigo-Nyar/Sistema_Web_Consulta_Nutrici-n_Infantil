@@ -1,0 +1,519 @@
+
+<style>
+/* Popup container - can be anything you want */
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+  visibility: hidden;
+  width: 400px;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  margin-left: -80px;
+}
+
+
+/* Popup arrow */
+.popup .popuptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;} 
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+</style>
+
+
+<script>
+// When the user clicks on div, open the popup
+function myFunction() {
+  var popup = document.getElementById("myPopup");
+  popup.classList.toggle("show");
+}
+</script>
+
+
+<br>
+<div class="card bg-light">
+  <div class="card-header">Historial Paciente</div>
+
+  <div class="card-body">
+    <h5 class="card-title">
+      <%= paciente.idPersona.nombre%>
+        <%= paciente.idPersona.paterno%>
+          <%= paciente.idPersona.materno%>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-raised btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+              <span style="font-size: 1em; color: white;">
+                <i class="fas fa-plus"></i>
+              </span>
+              Nueva Consulta
+            </button>
+    </h5>
+
+    <% var auxEdad = new Date(paciente.idPersona.fechaNacimiento)%>
+    <div class="popup" onclick="myFunction()">
+      Mostrar Dieta
+      <span class="popuptext" id="myPopup">
+        <div >
+          <div class="card border-success mb-3" style="max-width: 18rem;">
+            <div class="card-header bg-transparent border-success">Dieta</div>
+            <div class="card-body text-success">
+              <h5 class="card-title">Años:
+                <%= (2019 - auxEdad.getFullYear())%> - Meses:
+                  <%=(1 +auxEdad.getMonth())%>
+              </h5>
+              <%var recetas = (paciente.receta.split('$'))%>
+                <ul>
+                  <% recetas.forEach((receta)=>{%>
+                    <%if (receta!=paciente.idPersona.alergia) { %>
+                      <li>
+                        <p class="card-text">
+                          <%=receta %>
+                        </p>
+                      </li>
+                    <% } %>
+                    <%})%>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent border-success">Footer</div> 
+          </div>
+        </div>   
+      </span>
+    </div>
+      <div class="row">
+
+
+
+        
+         
+        <% historial.forEach((item, i) => { %>
+          <div class="col-sm-6">
+            <table class="table">
+              <thead>
+                <tr>
+                    <%  var fecha = new Date(item.createdAt)%>
+                    
+                  <th colspan="3" scope="col"><%= fecha.toLocaleDateString()  %></th>
+                  <th scope="col">Alterar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="3">
+                    <div class="row">
+                      <div class="col">
+                        <label for="inputEmail4">Consultorio</label>
+
+                        <input type="text" class="form-control" placeholder="Consultorio" value="A1" disabled>
+                      </div>
+                      <div class="col">
+                        <label for="inputEmail4">Lugar</label>
+                        <input type="text" class="form-control" placeholder="Lugar" value="Zona Sur" disabled>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="2">Peso</th>
+                  <td colspan="2">
+                    <%=item.peso %> kg</td>
+                </tr>
+                <tr>
+                  <th colspan="2">Altura</th>
+                  <td colspan="2">
+                    <%=item.estatura %> cm</td>
+                </tr>
+                <tr>
+                  <th colspan="2">Cabeza</th>
+                  <td colspan="2">
+                    <%=item.cabeza%> cm</td>
+                </tr>
+                <tr>
+                  <th colspan="2">IMC</th>
+                  <td colspan="2">
+                    <%=item.imc%>
+                  </td>
+                </tr>
+                <tr>
+                    <th colspan="2">Temperatura</th>
+                    <td colspan="2">
+                      <%=item.temperatura%>
+                    </td>
+                  </tr>
+                  <tr>
+                      <th colspan="2">Presion</th>
+                      <td colspan="2">
+                        <%=item.presion%>
+                      </td>
+                    </tr>
+
+                <tr class="bg-<%=item.estado.color %> text-white">
+                  <td>Estado</td>
+                  <td colspan="3">
+                    <%=item.estado.nombre%>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          <%})%>
+      </div>
+
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Nueva Consulta</h5>
+        <button type="button" class="close btn-raised" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form method="POST" action="/paciente/consulta">
+          <input type="number" name="idPaciente" value="<%= paciente.id%>" hidden>
+          <div class="form-group row">
+            <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Peso</label>
+            <div class="col-sm-10">
+              <input type="number" name="peso" class="form-control form-control-sm" placeholder="kg." step="0.01" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Estatura</label>
+            <div class="col-sm-10">
+              <input type="number" name="estatura" class="form-control form-control-sm" placeholder="Cm" step="0.01" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Perimetro craneal</label>
+            <div class="col-sm-10">
+              <input type="number" name="cabeza" class="form-control form-control-sm" placeholder="Cm" value="0" step="0.01">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label col-form-label-sm">
+              <span style="font-size: 1.3em; color: black;">
+                <i class="fas fa-thermometer-three-quarters"></i>
+              </span>
+              Temperatura</label>
+            <div class="col-sm-3">
+              <input type="number" step="0.01" name="temperatura" class="form-control form-control-sm" placeholder="">
+            </div>
+            <label class="col-sm-3 col-form-label col-form-label-sm">
+              <span style="font-size: 1.3em; color: black;">
+                <i class="fas fa-procedures"></i>
+              </span>
+              Presion</label>
+            <div class="col-sm-3">
+              <input type="number" step="0.01" name="presion" class="form-control form-control-sm" placeholder="">
+            </div>
+          </div>
+
+
+          <div class="form-group row">
+            <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Edad</label>
+            <!-- <div class="col-sm-3">
+                  <label class="input-group-text">Años</label>
+
+                  <select class="custom-select" name="anualidades">
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+
+                    </select>
+              </div>
+              <div class="col-sm-3">
+                  <label class="input-group-text">Meses</label>
+                  <select class="custom-select" name="meses">
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+              </div>
+              <div class="col-sm-3">
+                  <label class="input-group-text">Semanas</label>
+
+                  <select class="custom-select" name="semanas">
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                    </select>
+              </div> -->
+            <h4>Años:
+              <%= (2019 - auxEdad.getFullYear())%> - Meses:
+                <%=(1 +auxEdad.getMonth())%>
+            </h4>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" value="Adicionar">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<canvas id="myChart3" height="100"></canvas>
+<canvas id="myChart"  height="100"></canvas>
+  <canvas id="myChart2"  height="100"></canvas>
+<script>
+  
+
+  var historial = <%- JSON.stringify(historial) %>;
+  var ctx = document.getElementById('myChart');
+  var ctx2 = document.getElementById('myChart2');
+  var ctx3 = document.getElementById('myChart3');
+
+
+
+  var myChart3 = new Chart(ctx3, {
+    type: 'line',
+    data: {
+      // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: historial.map(item => {
+
+        var fecha = new Date(item.createdAt)
+
+        return fecha.toLocaleDateString() + ' - ' + item.estado.nombre
+      }),
+      datasets: [{
+        label: '# Indice de Masa Corporal',
+        data: historial.map(item => {
+          return item.imc;
+        }),
+        fill: false,
+        backgroundColor: historial.map(item => {
+          return item.estado.estilo
+        }),
+        borderColor: [
+          'blue',
+        ],
+        // borderWidth: 1
+        borderDash: [5, 5],
+        pointRadius: 15,
+        pointHoverRadius: 10,
+
+        borderWidth: 0.5
+      }]
+    },
+    options: {
+      responsive: true,
+      title: {
+        display: true,
+        text: 'Historia del paciente'
+      },
+      tooltips: {
+        mode: 'index',
+        intersect: false,
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: true
+      },
+      scales: {
+        xAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Tiempo'
+          }
+        }],
+        yAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'IMC = Indice de masa Corporal'
+          }
+        }]
+      }
+    }
+  });
+  var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: historial.map(item => {
+        var fecha = new Date(item.createdAt)
+
+        return fecha.toLocaleDateString() + ' - ' + item.estado.nombre
+      }),
+      datasets: [{
+        label: '# ',
+        data: historial.map(item => {
+          return item.temperatura;
+        }),
+        fill: false,
+        backgroundColor: historial.map(item => {
+          return item.estado.estilo
+        }),
+        borderColor: [
+          'blue',
+        ],
+        // borderWidth: 1
+
+
+        borderWidth: 0.5
+      }]
+    },
+    options: {
+      responsive: true,
+      title: {
+        display: true,
+        text: 'Temperatura del Paciente'
+      },
+      tooltips: {
+        mode: 'index',
+        intersect: false,
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: true
+      },
+      scales: {
+        xAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Tiempo'
+          }
+        }],
+        yAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Temperatura'
+          }
+        }]
+      }
+    }
+  });
+  var myChart2 = new Chart(ctx2, {
+    type: 'line',
+    data: {
+      // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: historial.map(item => {
+        var fecha = new Date(item.createdAt)
+
+        return fecha.toLocaleDateString() + ' - ' + item.estado.nombre
+      }),
+      datasets: [{
+        label: '# ',
+        data: historial.map(item => {
+          return item.presion;
+        }),
+        fill: false,
+        backgroundColor: historial.map(item => {
+          return item.estado.estilo
+        }),
+        borderColor: [
+          'blue',
+        ],
+        // borderWidth: 1
+
+
+        borderWidth: 0.5
+      }]
+    },
+    options: {
+      responsive: true,
+      title: {
+        display: true,
+        text: 'Presion del Paciente'
+      },
+      tooltips: {
+        mode: 'index',
+        intersect: false,
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: true
+      },
+      scales: {
+        xAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Tiempo'
+          }
+        }],
+        yAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Presion'
+          }
+        }]
+      }
+    }
+  });
+
+  var abc = new Date();
+  abc.getFullYear();
+  abc.getMonth();
+  
+</script>
