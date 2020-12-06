@@ -1,4 +1,7 @@
 /**
+ * Proyecto INF 281
+ * Ronald Honorio
+ * Rodrigo Castillo
  * app.js
  *
  * Use `app.js` to run your app without `sails lift`.
