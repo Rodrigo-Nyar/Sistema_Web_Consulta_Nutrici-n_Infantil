@@ -87,7 +87,19 @@ module.exports = {
       usuario: {
         collection: 'usuario',
         via: 'idPersona'
-      }
+      },
+      tutor1: {
+        type: 'string',
+        required: false,
+        allowNull: true
+  
+      },
+      tutor2: {
+        type: 'string',
+        required: false,
+        allowNull: true
+  
+      },
   
     }
   

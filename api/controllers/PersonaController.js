@@ -20,6 +20,9 @@ module.exports = {
                 expedido: req.param('expedido'),
                 sexo: req.param('sexo'),
                 rol: req.param('rol'),
+                alergia: req.param('alergia'),
+                tutor1:req.param('tutor1'),
+                tutor2:req.param('tutor2')
             }
         var rol = req.param('rol')
             // sails.log("NUEVA PERSONA", nuevaPersona)
