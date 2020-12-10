@@ -261,13 +261,40 @@ module.exports = {
 
                 Paciente.findOne(element.idPaciente).populate('idPersona').exec(function(err,datoPaciente){
                     datoPaciente.cita = element
+
+//console.log("+++++++",datoPaciente.cita.hora)
                     pacientes.push(datoPaciente);
+
                     callback(null);
                 });
 
             }, function(error) {
                 
+
+
+               // console.log("---------------------------------------------",pacientes)
                 if (error) return Error('Error');
+
+                pacientes.sort((a,b)=>{
+                    
+                    let comparado=0;
+                    let f1 = new Date(a.cita.fecha);
+                    let f2 = new Date(b.cita.fecha);
+                    if(f1>f2){
+                        comparado=1
+                    }else if(a.cita.fecha<b.cita.fecha){
+                        comparado=-1
+                    }
+                    if(comparado === 0 ){
+                        if(a.cita.hora>b.cita.hora){
+                            comparado=1
+                        }else if(a.cita.hora<b.cita.hora){
+                            comparado=-1
+                        }
+                    }
+                   
+                    return comparado;
+                })
                 return res.view({
                     citas: pacientes,
                     layout:'layouts/layout_medico'
