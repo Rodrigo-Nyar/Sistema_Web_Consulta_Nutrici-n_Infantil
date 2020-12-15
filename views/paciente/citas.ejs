@@ -120,9 +120,12 @@
 	var citas = <%- JSON.stringify(citas)%>
 // 	var timezoneName = moment.tz.guess();
 // tui.Calendar.setTimezoneOffset(moment.tz.zone(timezoneName).utcOffset(moment()));
+
 var calendario = new tui.Calendar(document.getElementById('calendar'),{
   defaultView: 'month',
   taskView: true,
+  useDetailPopup: true,
+  isReadOnly: true,
   template: {
     monthDayname: function(dayname) {
       return '<span class="calendar-week-dayname-name">' + dayname.label + '</span>';
@@ -132,7 +135,11 @@ var calendario = new tui.Calendar(document.getElementById('calendar'),{
 	},
 	time:(schedule)=>{
 		return schedule.title + '<i class="fa fa-refresh">OSO</i>'
-	}
+	},
+	popupDetailDate: function(isAllDay, start, end) {
+	  	var fecha = new Date(start);
+		return fecha.toLocaleString();
+    },
   },
   month:{
 	  daynames:['DOMINGO','LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO']
@@ -153,14 +160,19 @@ calendario.today();
 
 var auxFechas =[]
 citas.forEach((element,index)=> {
+	var fecha = new Date(element.cita.fecha);
+	var hora = new Date('01 Jan 1970 ' + element.cita.hora + ':00 GMT-0400 (Bolivia Time)');
+	fecha.setHours(hora.getHours());
+	var tiempo = Date.parse(fecha)
 	auxFechas.push({
 		id:index+1,
 		calendarId:'1',
 		title:element.idPersona.paterno+ ' ' +element.idPersona.nombre,
 		category:'time',
 		dueDateClass:'',
-		start:element.cita.fecha,
-		end:element.cita.fecha
+		start:tiempo,
+		end:tiempo,
+		isAllDay:false
 	})
 });
 calendario.createSchedules(auxFechas);
